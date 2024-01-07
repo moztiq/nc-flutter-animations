@@ -29,10 +29,11 @@ class _ImplicitAnimationsScreenState extends State<ImplicitAnimationsScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AnimatedContainer(
+              curve: Curves.elasticOut,
               width: size.width * 0.7,
               height: size.width * 0.7,
               duration: const Duration(
-                milliseconds: 300,
+                seconds: 1,
               ),
               decoration: BoxDecoration(
                 color: _visible ? Colors.red : Colors.amber,
