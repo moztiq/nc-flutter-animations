@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class ExplicitAnimationsScreen extends StatefulWidget {
   const ExplicitAnimationsScreen({super.key});
@@ -8,7 +9,16 @@ class ExplicitAnimationsScreen extends StatefulWidget {
       _ExplicitAnimationsScreenState();
 }
 
-class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen> {
+class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController =
+      AnimationController(vsync: this);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
