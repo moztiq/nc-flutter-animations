@@ -12,11 +12,32 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 2),
+    duration: const Duration(milliseconds: 300),
   );
-  late final Animation<Color?> _color = ColorTween(
-    begin: Colors.amber,
-    end: Colors.red,
+
+  late final Animation<Decoration> _decoration = DecorationTween(
+    begin: const BoxDecoration(
+      color: Colors.amber,
+    ),
+    end: BoxDecoration(
+      color: Colors.red,
+      borderRadius: BorderRadius.circular(100),
+    ),
+  ).animate(_animationController);
+
+  late final Animation<double> _rotation = Tween(
+    begin: 0.0,
+    end: 5.0,
+  ).animate(_animationController);
+
+  late final Animation<double> _scale = Tween(
+    begin: 1.0,
+    end: 1.2,
+  ).animate(_animationController);
+
+  late final Animation<Offset> _position = Tween(
+    begin: Offset.zero,
+    end: const Offset(0, -0.2),
   ).animate(_animationController);
 
   void _play() {
@@ -32,8 +53,9 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
   }
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,15 +68,21 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedBuilder(
-              animation: _color,
-              builder: (BuildContext context, Widget? child) {
-                return Container(
-                  color: _color.value,
-                  width: 400,
-                  height: 400,
-                );
-              },
+            SlideTransition(
+              position: _position,
+              child: ScaleTransition(
+                scale: _scale,
+                child: RotationTransition(
+                  turns: _rotation,
+                  child: DecoratedBoxTransition(
+                    decoration: _decoration,
+                    child: const SizedBox(
+                      width: 300,
+                      height: 300,
+                    ),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 30),
             Row(
