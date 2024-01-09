@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class ExplicitAnimationsScreen extends StatefulWidget {
@@ -14,7 +12,7 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: Duration(seconds: 10),
+    duration: const Duration(seconds: 10),
   );
 
   void _play() {
@@ -32,45 +30,48 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
   @override
   void initState() {
     super.initState();
-    Timer.periodic(
-      Duration(milliseconds: 500),
-      (timer) {
-        print(_animationController.value);
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Explicit Animations'),
+        title: const Text('Explicit Animations'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              '${_animationController.value}',
-              style: TextStyle(fontSize: 58),
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (BuildContext context, Widget? child) {
+                return Opacity(
+                  opacity: _animationController.value,
+                  child: Container(
+                    color: Colors.amber,
+                    width: 400,
+                    height: 400,
+                  ),
+                );
+              },
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: _play,
-                  child: Text('Play'),
+                  child: const Text('Play'),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: _pause,
-                  child: Text('Pause'),
+                  child: const Text('Pause'),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: _rewind,
-                  child: Text('Rewind'),
+                  child: const Text('Rewind'),
                 ),
               ],
             )
