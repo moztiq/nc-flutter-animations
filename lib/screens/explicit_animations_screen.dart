@@ -14,16 +14,8 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     vsync: this,
     duration: const Duration(seconds: 2),
     reverseDuration: const Duration(seconds: 1),
-  )
-    ..addListener(() {
+  )..addListener(() {
       _range.value = _animationController.value;
-    })
-    ..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _animationController.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _animationController.forward();
-      }
     });
 
   late final Animation<Decoration> _decoration = DecorationTween(
@@ -83,6 +75,19 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     _animationController.value = value;
   }
 
+  bool _looping = false;
+
+  void _toggleLooping() {
+    if (_looping) {
+      _animationController.stop();
+    } else {
+      _animationController.repeat(reverse: true);
+    }
+    setState(() {
+      _looping = !_looping;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,6 +131,11 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
                 ElevatedButton(
                   onPressed: _rewind,
                   child: const Text('Rewind'),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: _toggleLooping,
+                  child: Text(_looping ? 'Stop Repeat' : 'Repeat'),
                 ),
               ],
             ),
