@@ -14,8 +14,16 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     vsync: this,
     duration: const Duration(seconds: 2),
     reverseDuration: const Duration(seconds: 1),
-  )..addListener(() {
+  )
+    ..addListener(() {
       _range.value = _animationController.value;
+    })
+    ..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _animationController.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        _animationController.forward();
+      }
     });
 
   late final Animation<Decoration> _decoration = DecorationTween(
