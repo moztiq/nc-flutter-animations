@@ -12,7 +12,8 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 300),
+    duration: const Duration(seconds: 2),
+    reverseDuration: Duration(seconds: 1),
   );
 
   late final Animation<Decoration> _decoration = DecorationTween(
@@ -27,18 +28,24 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
 
   late final Animation<double> _rotation = Tween(
     begin: 0.0,
-    end: 5.0,
-  ).animate(_animationController);
+    end: 0.5,
+  ).animate(_curve);
 
   late final Animation<double> _scale = Tween(
     begin: 1.0,
-    end: 1.2,
-  ).animate(_animationController);
+    end: 1.1,
+  ).animate(_curve);
 
   late final Animation<Offset> _position = Tween(
     begin: Offset.zero,
     end: const Offset(0, -0.2),
-  ).animate(_animationController);
+  ).animate(_curve);
+
+  late final CurvedAnimation _curve = CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.elasticOut,
+    reverseCurve: Curves.bounceIn,
+  );
 
   void _play() {
     _animationController.forward();
