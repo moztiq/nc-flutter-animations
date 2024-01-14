@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nc_flutter_animations/screens/apple_watch_screen.dart';
 import 'package:nc_flutter_animations/screens/explicit_animations_screen.dart';
 import 'package:nc_flutter_animations/screens/implicit_animations_screen.dart';
 
@@ -18,25 +19,34 @@ class MenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter Animations'),
+        title: const Text('Flutter Animations'),
       ),
       body: Center(
         child: Column(
           children: [
             ElevatedButton(
               onPressed: () {
-                _goToPage(context, ImplicitAnimationsScreen());
+                _goToPage(context, const ImplicitAnimationsScreen());
               },
-              child: Text('Implicit Animations'),
+              child: const Text('Implicit Animations'),
             ),
             ElevatedButton(
               onPressed: () {
                 _goToPage(
                   context,
-                  ExplicitAnimationsScreen(),
+                  const ExplicitAnimationsScreen(),
                 );
               },
-              child: Text('Explicit Animations'),
+              child: const Text('Explicit Animations'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _goToPage(
+                  context,
+                  const AppleWatchScreen(),
+                );
+              },
+              child: const Text('Apple Watch'),
             )
           ],
         ),
