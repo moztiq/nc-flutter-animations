@@ -17,7 +17,7 @@ class _MusicPlayerScreenmState extends State<MusicPlayerScreen> {
 
   int _currentPage = 0;
 
-  ValueNotifier<double> _scroll = ValueNotifier(0.0);
+  final ValueNotifier<double> _scroll = ValueNotifier(0.0);
 
   void _onPageChanged(int newPage) {
     setState(() {
@@ -43,10 +43,15 @@ class _MusicPlayerScreenmState extends State<MusicPlayerScreen> {
   void _onTap(int page) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => MusicPlayerDetailScreen(
-          page: page,
-        ),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FadeTransition(
+            opacity: animation,
+            child: MusicPlayerDetailScreen(
+              page: page,
+            ),
+          );
+        },
       ),
     );
   }
