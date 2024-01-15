@@ -25,6 +25,14 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     super.dispose();
   }
 
+  String toTimeString(double value) {
+    final duration = Duration(milliseconds: (value * 60000).toInt());
+    final timeString =
+        '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+
+    return timeString;
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -70,12 +78,63 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           AnimatedBuilder(
             animation: _progressController,
             builder: (BuildContext context, Widget? child) {
-              return CustomPaint(
-                size: Size(size.width - 80, 5),
-                painter: ProgressBar(progressValue: _progressController.value),
+              return Column(
+                children: [
+                  CustomPaint(
+                    size: Size(size.width - 80, 5),
+                    painter:
+                        ProgressBar(progressValue: _progressController.value),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: Row(
+                      children: [
+                        Text(
+                          toTimeString(_progressController.value),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          toTimeString(1 - _progressController.value),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
               );
             },
-          )
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            "Ready Player One",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          const Text(
+            "Ready Player One - Steven Spielberg, SONG FROM THE MOTION PICTURE",
+            maxLines: 1,
+            overflow: TextOverflow.visible,
+            style: TextStyle(fontSize: 18),
+          ),
         ],
       ),
     );
