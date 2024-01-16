@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class MusicPlayerDetailScreen extends StatefulWidget {
   final int page;
@@ -29,8 +30,16 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     end: Offset(-0.6, 0),
   ).animate(_marqueeController);
 
+  late final AnimationController _playController = AnimationController(
+    vsync: this,
+    duration: Duration(
+      milliseconds: 300,
+    ),
+  );
+
   @override
   void dispose() {
+    _playController.dispose();
     _marqueeController.dispose();
     _progressController.dispose();
     super.dispose();
@@ -42,6 +51,14 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
         '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
 
     return timeString;
+  }
+
+  void _onPlayPauseTap() {
+    if (_playController.isCompleted) {
+      _playController.reverse();
+    } else {
+      _playController.forward();
+    }
   }
 
   @override
@@ -150,6 +167,31 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
               style: TextStyle(fontSize: 18),
             ),
           ),
+          SizedBox(
+            height: 30,
+          ),
+          GestureDetector(
+            onTap: _onPlayPauseTap,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedIcon(
+                  icon: AnimatedIcons.pause_play,
+                  progress: _playController,
+                  size: 50,
+                ),
+                // LottieBuilder.asset(
+                //   "assets/animations/play-lottie.json",
+                //   controller: _playController,
+                //   onLoaded: (composition) {
+                //     _playController.duration = composition.duration;
+                //   },
+                //   width: 200,
+                //   height: 200,
+                // )
+              ],
+            ),
+          )
         ],
       ),
     );
