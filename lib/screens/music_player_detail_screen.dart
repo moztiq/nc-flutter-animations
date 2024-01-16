@@ -11,7 +11,7 @@ class MusicPlayerDetailScreen extends StatefulWidget {
 }
 
 class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _progressController = AnimationController(
     vsync: this,
     duration: const Duration(minutes: 1),
@@ -19,8 +19,19 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
       reverse: true,
     );
 
+  late final AnimationController _marqueeController = AnimationController(
+    vsync: this,
+    duration: Duration(seconds: 20),
+  )..repeat(reverse: true);
+
+  late final Animation<Offset> _marqueeTween = Tween(
+    begin: Offset(0.1, 0),
+    end: Offset(-0.6, 0),
+  ).animate(_marqueeController);
+
   @override
   void dispose() {
+    _marqueeController.dispose();
     _progressController.dispose();
     super.dispose();
   }
@@ -129,11 +140,15 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           const SizedBox(
             height: 5,
           ),
-          const Text(
-            "Ready Player One - Steven Spielberg, SONG FROM THE MOTION PICTURE",
-            maxLines: 1,
-            overflow: TextOverflow.visible,
-            style: TextStyle(fontSize: 18),
+          SlideTransition(
+            position: _marqueeTween,
+            child: const Text(
+              "Ready Player One - Steven Spielberg, SONG FROM THE MOTION PICTURE",
+              maxLines: 1,
+              overflow: TextOverflow.visible,
+              softWrap: false,
+              style: TextStyle(fontSize: 18),
+            ),
           ),
         ],
       ),
