@@ -22,24 +22,25 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
 
   late final AnimationController _marqueeController = AnimationController(
     vsync: this,
-    duration: Duration(seconds: 20),
+    duration: const Duration(seconds: 20),
   )..repeat(reverse: true);
 
   late final Animation<Offset> _marqueeTween = Tween(
-    begin: Offset(0.1, 0),
-    end: Offset(-0.6, 0),
+    begin: const Offset(0.1, 0),
+    end: const Offset(-0.6, 0),
   ).animate(_marqueeController);
 
   late final AnimationController _playController = AnimationController(
     vsync: this,
-    duration: Duration(
+    duration: const Duration(
       milliseconds: 300,
     ),
   );
 
   late final AnimationController _menuController = AnimationController(
     vsync: this,
-    duration: Duration(seconds: 3),
+    duration: const Duration(seconds: 3),
+    reverseDuration: const Duration(seconds: 1),
   );
 
   final Curve _menuCurve = Curves.easeInOutCubic;
@@ -60,7 +61,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
 
   late final Animation<Offset> _screenOffset = Tween(
     begin: Offset.zero,
-    end: Offset(0.5, 0),
+    end: const Offset(0.5, 0),
   ).animate(
     CurvedAnimation(
       parent: _menuController,
@@ -86,13 +87,34 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     ),
   );
 
-  late final Animation<Offset> _profileOffset = Tween(
-    begin: Offset(-1, 0),
+  late final List<Animation<Offset>> _menuAnimations = [
+    for (var i = 0; i < _menus.length; i++)
+      Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _menuController,
+          curve: Interval(
+            0.4 + (0.1 * 1),
+            0.7 + (0.1 * i),
+            curve: _menuCurve,
+          ),
+        ),
+      ),
+  ];
+
+  late final Animation<Offset> _logOutSlide = Tween<Offset>(
+    begin: const Offset(-1, 0),
     end: Offset.zero,
   ).animate(
     CurvedAnimation(
       parent: _menuController,
-      curve: Interval(0.4, 0.7, curve: _menuCurve),
+      curve: Interval(
+        0.8,
+        1.0,
+        curve: _menuCurve,
+      ),
     ),
   );
 
@@ -165,31 +187,31 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
             leading: FadeTransition(
               opacity: _closeButtonOpacity,
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: _closeMenu,
               ),
             ),
           ),
           body: Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 15,
             ),
             child: Column(
               children: [
-                for (var menu in _menus) ...[
+                for (var i = 0; i < _menus.length; i++) ...[
                   SlideTransition(
-                    position: _profileOffset,
+                    position: _menuAnimations[i],
                     child: Row(
                       children: [
                         Icon(
-                          menu['icon'],
+                          _menus[i]['icon'],
                           color: Colors.grey.shade200,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Text(
-                          menu['text'],
+                          _menus[i]['text'],
                           style: TextStyle(
                             color: Colors.grey.shade200,
                             fontSize: 18,
@@ -198,28 +220,31 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
                       ],
                     ),
                   ),
-                  SizedBox(height: 20)
+                  const SizedBox(height: 20)
                 ],
-                Spacer(),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Logout',
-                      style: TextStyle(
+                const Spacer(),
+                SlideTransition(
+                  position: _logOutSlide,
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.logout,
                         color: Colors.red,
-                        fontSize: 18,
                       ),
-                    )
-                  ],
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Logout',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 )
               ],
@@ -234,7 +259,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
               appBar: AppBar(
                 title: const Text('Ready Player One'),
                 actions: [
-                  IconButton(onPressed: _openMenu, icon: Icon(Icons.menu))
+                  IconButton(onPressed: _openMenu, icon: const Icon(Icons.menu))
                 ],
               ),
               body: Column(
@@ -336,7 +361,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   GestureDetector(
@@ -361,7 +386,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   GestureDetector(
@@ -369,7 +394,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
                     onHorizontalDragStart: (_) => _toggleDragging(),
                     onHorizontalDragEnd: (_) => _toggleDragging(),
                     child: AnimatedScale(
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       scale: _dragging ? 1.1 : 1,
                       curve: Curves.bounceOut,
                       child: Container(
