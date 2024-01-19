@@ -25,6 +25,11 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     duration: Duration(seconds: 20),
   )..repeat(reverse: true);
 
+  late final Animation<Offset> _marqueeTween = Tween(
+    begin: Offset(0.1, 0),
+    end: Offset(-0.6, 0),
+  ).animate(_marqueeController);
+
   late final AnimationController _playController = AnimationController(
     vsync: this,
     duration: Duration(
@@ -34,13 +39,38 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
 
   late final AnimationController _menuController = AnimationController(
     vsync: this,
-    duration: Duration(seconds: 5),
+    duration: Duration(seconds: 1),
   );
 
-  late final Animation<Offset> _marqueeTween = Tween(
-    begin: Offset(0.1, 0),
-    end: Offset(-0.6, 0),
-  ).animate(_marqueeController);
+  final Curve _menuCurve = Curves.easeInOutCubic;
+
+  late final Animation<double> _screenScale = Tween(
+    begin: 1.0,
+    end: 0.7,
+  ).animate(
+    CurvedAnimation(
+      parent: _menuController,
+      curve: Interval(
+        0.0,
+        0.5,
+        curve: _menuCurve,
+      ),
+    ),
+  );
+
+  late final Animation<Offset> _screenOffset = Tween(
+    begin: Offset.zero,
+    end: Offset(0.5, 0),
+  ).animate(
+    CurvedAnimation(
+      parent: _menuController,
+      curve: Interval(
+        0.5,
+        1.0,
+        curve: _menuCurve,
+      ),
+    ),
+  );
 
   @override
   void dispose() {
@@ -166,165 +196,173 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
             ),
           ),
         ),
-        Scaffold(
-          appBar: AppBar(
-            title: const Text('Ready Player One'),
-            actions: [IconButton(onPressed: _openMenu, icon: Icon(Icons.menu))],
-          ),
-          body: Column(
-            children: [
-              const SizedBox(
-                height: 30,
+        SlideTransition(
+          position: _screenOffset,
+          child: ScaleTransition(
+            scale: _screenScale,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text('Ready Player One'),
+                actions: [
+                  IconButton(onPressed: _openMenu, icon: Icon(Icons.menu))
+                ],
               ),
-              Align(
-                alignment: Alignment.center,
-                child: Hero(
-                  tag: '${widget.page}',
-                  child: Container(
-                    width: 350,
-                    height: 350,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
-                          blurRadius: 10,
-                          spreadRadius: 2,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                      image: DecorationImage(
-                        image: AssetImage(
-                          'assets/covers/${widget.page}.jpeg',
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+              body: Column(
+                children: [
+                  const SizedBox(
+                    height: 30,
                   ),
-                ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              AnimatedBuilder(
-                animation: _progressController,
-                builder: (BuildContext context, Widget? child) {
-                  return Column(
-                    children: [
-                      CustomPaint(
-                        size: Size(size.width - 80, 5),
-                        painter: ProgressBar(
-                            progressValue: _progressController.value),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: Row(
-                          children: [
-                            Text(
-                              toTimeString(_progressController.value),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600,
-                              ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Hero(
+                      tag: '${widget.page}',
+                      child: Container(
+                        width: 350,
+                        height: 350,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.4),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: const Offset(0, 8),
                             ),
-                            const Spacer(),
-                            Text(
-                              toTimeString(1 - _progressController.value),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
                           ],
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'assets/covers/${widget.page}.jpeg',
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                "Ready Player One",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              SlideTransition(
-                position: _marqueeTween,
-                child: const Text(
-                  "Ready Player One - Steven Spielberg, SONG FROM THE MOTION PICTURE",
-                  maxLines: 1,
-                  overflow: TextOverflow.visible,
-                  softWrap: false,
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              GestureDetector(
-                onTap: _onPlayPauseTap,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AnimatedIcon(
-                      icon: AnimatedIcons.pause_play,
-                      progress: _playController,
-                      size: 50,
-                    ),
-                    // LottieBuilder.asset(
-                    //   "assets/animations/play-lottie.json",
-                    //   controller: _playController,
-                    //   onLoaded: (composition) {
-                    //     _playController.duration = composition.duration;
-                    //   },
-                    //   width: 200,
-                    //   height: 200,
-                    // )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              GestureDetector(
-                onHorizontalDragUpdate: _onVolumeDragUpdate,
-                onHorizontalDragStart: (_) => _toggleDragging(),
-                onHorizontalDragEnd: (_) => _toggleDragging(),
-                child: AnimatedScale(
-                  duration: Duration(milliseconds: 300),
-                  scale: _dragging ? 1.1 : 1,
-                  curve: Curves.bounceOut,
-                  child: Container(
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: ValueListenableBuilder(
-                      valueListenable: _volume,
-                      builder:
-                          (BuildContext context, double value, Widget? child) {
-                        return CustomPaint(
-                          size: Size(size.width - 80, 50),
-                          painter: VolumePaint(volume: value),
-                        );
-                      },
                     ),
                   ),
-                ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  AnimatedBuilder(
+                    animation: _progressController,
+                    builder: (BuildContext context, Widget? child) {
+                      return Column(
+                        children: [
+                          CustomPaint(
+                            size: Size(size.width - 80, 5),
+                            painter: ProgressBar(
+                                progressValue: _progressController.value),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Row(
+                              children: [
+                                Text(
+                                  toTimeString(_progressController.value),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  toTimeString(1 - _progressController.value),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "Ready Player One",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SlideTransition(
+                    position: _marqueeTween,
+                    child: const Text(
+                      "Ready Player One - Steven Spielberg, SONG FROM THE MOTION PICTURE",
+                      maxLines: 1,
+                      overflow: TextOverflow.visible,
+                      softWrap: false,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  GestureDetector(
+                    onTap: _onPlayPauseTap,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedIcon(
+                          icon: AnimatedIcons.pause_play,
+                          progress: _playController,
+                          size: 50,
+                        ),
+                        // LottieBuilder.asset(
+                        //   "assets/animations/play-lottie.json",
+                        //   controller: _playController,
+                        //   onLoaded: (composition) {
+                        //     _playController.duration = composition.duration;
+                        //   },
+                        //   width: 200,
+                        //   height: 200,
+                        // )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  GestureDetector(
+                    onHorizontalDragUpdate: _onVolumeDragUpdate,
+                    onHorizontalDragStart: (_) => _toggleDragging(),
+                    onHorizontalDragEnd: (_) => _toggleDragging(),
+                    child: AnimatedScale(
+                      duration: Duration(milliseconds: 300),
+                      scale: _dragging ? 1.1 : 1,
+                      curve: Curves.bounceOut,
+                      child: Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ValueListenableBuilder(
+                          valueListenable: _volume,
+                          builder: (BuildContext context, double value,
+                              Widget? child) {
+                            return CustomPaint(
+                              size: Size(size.width - 80, 50),
+                              painter: VolumePaint(volume: value),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ],
