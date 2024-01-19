@@ -15,14 +15,44 @@ class _WalletScreenState extends State<WalletScreen> {
       appBar: AppBar(
         title: const Text('Wallet'),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(20),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
+          // children: AnimateList(
+          //   interval: 500.milliseconds,
+          //   effects: [
+          //     SlideEffect(
+          //       duration: 1000.milliseconds,
+          //       begin: const Offset(-1, 0),
+          //       end: Offset.zero,
+          //       curve: Curves.easeInOutCubic,
+          //     ),
+          //     const FadeEffect(
+          //       begin: 0,
+          //       end: 1,
+          //     )
+          //   ],
+          //   children: [
+          //     const CreditCard(bgColor: Colors.purple),
+          //     const CreditCard(bgColor: Colors.black),
+          //     const CreditCard(bgColor: Colors.blue),
+          //   ],
+          // ),
           children: [
-            CreditCard(bgColor: Colors.purple),
-            CreditCard(bgColor: Colors.black),
-            CreditCard(bgColor: Colors.blue),
-          ],
+            const CreditCard(bgColor: Colors.purple),
+            const CreditCard(bgColor: Colors.black),
+            const CreditCard(bgColor: Colors.blue),
+          ]
+              .animate(interval: 500.milliseconds)
+              .slideX(
+                duration: 500.milliseconds,
+                begin: -1,
+                end: 0,
+                curve: Curves.easeInOutCubic,
+              )
+              .fadeIn(
+                begin: 0,
+              ),
         ),
       ),
     );
