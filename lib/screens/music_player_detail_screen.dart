@@ -39,7 +39,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
 
   late final AnimationController _menuController = AnimationController(
     vsync: this,
-    duration: Duration(seconds: 1),
+    duration: Duration(seconds: 3),
   );
 
   final Curve _menuCurve = Curves.easeInOutCubic;
@@ -52,7 +52,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
       parent: _menuController,
       curve: Interval(
         0.0,
-        0.5,
+        0.3,
         curve: _menuCurve,
       ),
     ),
@@ -65,10 +65,34 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     CurvedAnimation(
       parent: _menuController,
       curve: Interval(
-        0.5,
-        1.0,
+        0.2,
+        0.4,
         curve: _menuCurve,
       ),
+    ),
+  );
+
+  late final Animation<double> _closeButtonOpacity = Tween(
+    begin: 0.0,
+    end: 1.0,
+  ).animate(
+    CurvedAnimation(
+      parent: _menuController,
+      curve: Interval(
+        0.3,
+        0.5,
+        curve: _menuCurve,
+      ),
+    ),
+  );
+
+  late final Animation<Offset> _profileOffset = Tween(
+    begin: Offset(-1, 0),
+    end: Offset.zero,
+  ).animate(
+    CurvedAnimation(
+      parent: _menuController,
+      curve: Interval(0.4, 0.7, curve: _menuCurve),
     ),
   );
 
@@ -138,9 +162,12 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           appBar: AppBar(
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
-            leading: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: _closeMenu,
+            leading: FadeTransition(
+              opacity: _closeButtonOpacity,
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: _closeMenu,
+              ),
             ),
           ),
           body: Padding(
@@ -150,23 +177,26 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
             child: Column(
               children: [
                 for (var menu in _menus) ...[
-                  Row(
-                    children: [
-                      Icon(
-                        menu['icon'],
-                        color: Colors.grey.shade200,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        menu['text'],
-                        style: TextStyle(
+                  SlideTransition(
+                    position: _profileOffset,
+                    child: Row(
+                      children: [
+                        Icon(
+                          menu['icon'],
                           color: Colors.grey.shade200,
-                          fontSize: 18,
                         ),
-                      )
-                    ],
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          menu['text'],
+                          style: TextStyle(
+                            color: Colors.grey.shade200,
+                            fontSize: 18,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(height: 20)
                 ],
