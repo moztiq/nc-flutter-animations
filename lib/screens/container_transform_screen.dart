@@ -22,10 +22,10 @@ class _ContainerTransformScreenState extends State<ContainerTransformScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Container Transform'),
+        title: const Text('Container Transform'),
         actions: [
           IconButton(
-            icon: Icon(Icons.grid_4x4),
+            icon: const Icon(Icons.grid_4x4),
             onPressed: _toggleGrid,
           )
         ],
@@ -33,7 +33,7 @@ class _ContainerTransformScreenState extends State<ContainerTransformScreen> {
       body: _isGrid
           ? GridView.builder(
               itemCount: 20,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
@@ -44,8 +44,8 @@ class _ContainerTransformScreenState extends State<ContainerTransformScreen> {
                   return Column(
                     children: [
                       Image.asset("assets/covers/${(index % 5) + 1}.jpeg"),
-                      Text('Cosmos soundtrack'),
-                      Text(
+                      const Text('Cosmos soundtrack'),
+                      const Text(
                         'Alan Silvestri',
                         style: TextStyle(
                           fontSize: 14,
@@ -67,7 +67,7 @@ class _ContainerTransformScreenState extends State<ContainerTransformScreen> {
                 return OpenContainer(
                   closedElevation: 0,
                   openElevation: 0,
-                  transitionDuration: Duration(
+                  transitionDuration: const Duration(
                     milliseconds: 500,
                   ),
                   closedBuilder: (
@@ -86,9 +86,9 @@ class _ContainerTransformScreenState extends State<ContainerTransformScreen> {
                           ),
                         ),
                       ),
-                      title: Text('Cosmos soundtrack'),
-                      subtitle: Text('Alan Silvestri'),
-                      trailing: Icon(
+                      title: const Text('Cosmos soundtrack'),
+                      subtitle: const Text('Alan Silvestri'),
+                      trailing: const Icon(
                         Icons.arrow_forward_ios,
                       ),
                     );
@@ -102,7 +102,7 @@ class _ContainerTransformScreenState extends State<ContainerTransformScreen> {
                 );
               },
               separatorBuilder: (context, index) {
-                return SizedBox(
+                return const SizedBox(
                   height: 20,
                 );
               },
@@ -121,7 +121,7 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cosmos soundtrack'),
+        title: const Text('Cosmos soundtrack'),
       ),
       body: Column(
         children: [
