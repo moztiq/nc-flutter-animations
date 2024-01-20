@@ -9,6 +9,20 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  bool _isExpanded = false;
+
+  void _onExpanded() {
+    setState(() {
+      _isExpanded = true;
+    });
+  }
+
+  void _onShrink(_) {
+    setState(() {
+      _isExpanded = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,42 +31,34 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          // children: AnimateList(
-          //   interval: 500.milliseconds,
-          //   effects: [
-          //     SlideEffect(
-          //       duration: 1000.milliseconds,
-          //       begin: const Offset(-1, 0),
-          //       end: Offset.zero,
-          //       curve: Curves.easeInOutCubic,
-          //     ),
-          //     const FadeEffect(
-          //       begin: 0,
-          //       end: 1,
-          //     )
-          //   ],
-          //   children: [
-          //     const CreditCard(bgColor: Colors.purple),
-          //     const CreditCard(bgColor: Colors.black),
-          //     const CreditCard(bgColor: Colors.blue),
-          //   ],
-          // ),
-          children: [
-            const CreditCard(bgColor: Colors.purple),
-            const CreditCard(bgColor: Colors.black),
-            const CreditCard(bgColor: Colors.blue),
-          ]
-              .animate(interval: 500.milliseconds)
-              .slideX(
-                duration: 500.milliseconds,
-                begin: -1,
-                end: 0,
-                curve: Curves.easeInOutCubic,
-              )
-              .fadeIn(
-                begin: 0,
-              ),
+        child: GestureDetector(
+          onVerticalDragEnd: _onShrink,
+          onTap: _onExpanded,
+          child: Column(
+            children: [
+              const CreditCard(bgColor: Colors.purple)
+                  .animate(delay: 1.5.seconds, target: _isExpanded ? 0 : 1)
+                  .flipV(end: 0.1),
+              const CreditCard(bgColor: Colors.black)
+                  .animate(delay: 1.5.seconds, target: _isExpanded ? 0 : 1)
+                  .flipV(end: 0.1)
+                  .slideY(end: -0.8),
+              const CreditCard(bgColor: Colors.blue)
+                  .animate(delay: 1.5.seconds, target: _isExpanded ? 0 : 1)
+                  .flipV(end: 0.1)
+                  .slideY(end: -0.8 * 2),
+            ]
+                .animate(interval: 500.milliseconds)
+                .slideX(
+                  duration: 500.milliseconds,
+                  begin: -1,
+                  end: 0,
+                  curve: Curves.easeInOutCubic,
+                )
+                .fadeIn(
+                  begin: 0,
+                ),
+          ),
         ),
       ),
     );
