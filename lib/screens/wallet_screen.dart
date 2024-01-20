@@ -185,7 +185,7 @@ class CardDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transactions'),
+        title: const Text('Transactions'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -195,6 +195,58 @@ class CardDetailScreen extends StatelessWidget {
               tag: "$index",
               child: CreditCard(index: index, isExpanded: false),
             ),
+            ...[
+              for (var i in [1, 2, 3, 4, 5, 6])
+                Container(
+                  margin: const EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: ListTile(
+                    tileColor: Colors.grey.shade100,
+                    leading: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      child: const Icon(
+                        Icons.shopping_bag,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: const Text(
+                      'Uniqlo',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Gangam Style',
+                      style: TextStyle(
+                        color: Colors.grey.shade800,
+                      ),
+                    ),
+                    trailing: const Text(
+                      '\$382,483',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                )
+            ]
+                .animate(interval: 500.milliseconds)
+                .fadeIn(duration: 500.milliseconds)
+                .flipV(
+                  begin: -1,
+                  end: 0,
+                  curve: Curves.bounceOut,
+                ),
           ],
         ),
       ),
