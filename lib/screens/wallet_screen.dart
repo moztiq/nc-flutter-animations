@@ -36,14 +36,23 @@ class _WalletScreenState extends State<WalletScreen> {
           onTap: _onExpanded,
           child: Column(
             children: [
-              const CreditCard(bgColor: Colors.purple)
+              CreditCard(
+                bgColor: Colors.purple,
+                isExpanded: _isExpanded,
+              )
                   .animate(delay: 1.5.seconds, target: _isExpanded ? 0 : 1)
                   .flipV(end: 0.1),
-              const CreditCard(bgColor: Colors.black)
+              CreditCard(
+                bgColor: Colors.black,
+                isExpanded: _isExpanded,
+              )
                   .animate(delay: 1.5.seconds, target: _isExpanded ? 0 : 1)
                   .flipV(end: 0.1)
                   .slideY(end: -0.8),
-              const CreditCard(bgColor: Colors.blue)
+              CreditCard(
+                bgColor: Colors.blue,
+                isExpanded: _isExpanded,
+              )
                   .animate(delay: 1.5.seconds, target: _isExpanded ? 0 : 1)
                   .flipV(end: 0.1)
                   .slideY(end: -0.8 * 2),
@@ -67,78 +76,93 @@ class _WalletScreenState extends State<WalletScreen> {
 
 class CreditCard extends StatelessWidget {
   final Color bgColor;
+  final bool isExpanded;
 
-  const CreditCard({super.key, required this.bgColor});
+  const CreditCard({
+    super.key,
+    required this.bgColor,
+    required this.isExpanded,
+  });
+
+  void _onTap() {
+    print('tapped');
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: bgColor,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 30,
-          vertical: 40,
-        ),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 100,
+    return AbsorbPointer(
+      absorbing: !isExpanded,
+      child: GestureDetector(
+        onTap: _onTap,
+        child: Container(
+          width: double.infinity,
+          margin: const EdgeInsets.only(bottom: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: bgColor,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30,
+              vertical: 40,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'SEONGKI KIM',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      '**** **** **75',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
+                const SizedBox(
+                  height: 100,
                 ),
-                Stack(
-                  clipBehavior: Clip.none,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Positioned(
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red,
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'SEONGKI KIM',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
+                        Text(
+                          '**** **** **75',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
                     ),
-                    Positioned(
-                      right: 20,
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.amber,
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red,
+                            ),
+                          ),
                         ),
-                      ),
+                        Positioned(
+                          right: 20,
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.amber,
+                            ),
+                          ),
+                        )
+                      ],
                     )
                   ],
                 )
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
